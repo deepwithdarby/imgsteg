@@ -12,12 +12,14 @@ import {
   Download,
   Key,
   Loader2,
+  Lock,
   MessageSquare,
   ShieldCheck,
   Trash2,
   UploadCloud,
 } from "lucide-react";
 import { LSB } from "@/lib/lsb";
+import { encrypt, decrypt } from "@/lib/crypto";
 
 export function SteganographyTool() {
   const { toast } = useToast();
@@ -25,11 +27,13 @@ export function SteganographyTool() {
   // Encode state
   const [encodeImage, setEncodeImage] = useState<string | null>(null);
   const [secretText, setSecretText] = useState<string>("");
+  const [encodePassword, setEncodePassword] = useState<string>("");
   const [encodedResult, setEncodedResult] = useState<string | null>(null);
   const [isEncoding, setIsEncoding] = useState<boolean>(false);
 
   // Decode state
   const [decodeImage, setDecodeImage] = useState<string | null>(null);
+  const [decodePassword, setDecodePassword] = useState<string>("");
   const [decodedResult, setDecodedResult] = useState<{ decodedText: string, validationResult: string } | null>(null);
   const [isDecoding, setIsDecoding] = useState<boolean>(false);
 
@@ -64,8 +68,13 @@ export function SteganographyTool() {
 
     setIsEncoding(true);
     try {
+      let textToEncode = secretText;
+      if (encodePassword) {
+        textToEncode = await encrypt(secretText, encodePassword);
+      }
+
       const lsb = new LSB(encodeImage);
-      const encodedDataUri = await lsb.encode(secretText);
+      const encodedDataUri = await lsb.encode(textToEncode);
       setEncodedResult(encodedDataUri);
       toast({
         title: "Success!",
@@ -89,10 +98,29 @@ export function SteganographyTool() {
     setIsDecoding(true);
     try {
       const lsb = new LSB(decodeImage);
-      const decodedText = await lsb.decode();
+      const decodedTextFromImage = await lsb.decode();
+      
+      let finalDecodedText = decodedTextFromImage;
+      let validationMessage = "Decoded successfully using LSB. No encryption was detected.";
+
+      try {
+        if (decodePassword) {
+          finalDecodedText = await decrypt(decodedTextFromImage, decodePassword);
+          validationMessage = "Message decrypted successfully.";
+        } else {
+          // Try to detect if it's encrypted
+          const parts = decodedTextFromImage.split('.');
+          if (parts.length === 3 && parts.every(p => /^[A-Za-z0-9+/=]+$/.test(p))) {
+             validationMessage = "This message appears to be encrypted. Please enter a password to decrypt it."
+          }
+        }
+      } catch (e) {
+        throw new Error("Decryption failed. Check your password and try again.");
+      }
+
       setDecodedResult({
-        decodedText,
-        validationResult: "Decoded successfully using LSB. Ensure the message is what you expect, as LSB does not have built-in validation."
+        decodedText: finalDecodedText,
+        validationResult: validationMessage
       });
       toast({
         title: "Success!",
@@ -114,11 +142,13 @@ export function SteganographyTool() {
   const clearEncode = () => {
     setEncodeImage(null);
     setSecretText("");
+    setEncodePassword("");
     setEncodedResult(null);
   };
 
   const clearDecode = () => {
     setDecodeImage(null);
+    setDecodePassword("");
     setDecodedResult(null);
   };
   
@@ -171,6 +201,16 @@ export function SteganographyTool() {
                       onChange={(e) => setSecretText(e.target.value)}
                       className="min-h-[120px] text-base"
                     />
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                       <Input
+                        type="password"
+                        placeholder="Optional: Enter a password to encrypt your message"
+                        value={encodePassword}
+                        onChange={(e) => setEncodePassword(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
                     <div className="flex flex-col sm:flex-row gap-2">
                       <Button onClick={handleEncode} disabled={!encodeImage || !secretText || isEncoding} className="w-full">
                         {isEncoding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Key className="mr-2 h-4 w-4" />}
@@ -202,12 +242,24 @@ export function SteganographyTool() {
               <>
                 <ImageDropzone id="decode-upload" onImageChange={(e) => handleImageSelect(e, 'decode')} image={decodeImage} />
                 {decodeImage && (
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <Button onClick={handleDecode} disabled={!decodeImage || isDecoding} className="w-full">
-                      {isDecoding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />}
-                      Decode Message
-                    </Button>
-                     <Button variant="outline" onClick={clearDecode} className="w-full"><Trash2 className="mr-2 h-4 w-4" />Clear</Button>
+                  <div className="space-y-4">
+                    <div className="relative">
+                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                       <Input
+                        type="password"
+                        placeholder="Enter password if message is encrypted"
+                        value={decodePassword}
+                        onChange={(e) => setDecodePassword(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <Button onClick={handleDecode} disabled={!decodeImage || isDecoding} className="w-full">
+                        {isDecoding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />}
+                        Decode Message
+                      </Button>
+                      <Button variant="outline" onClick={clearDecode} className="w-full"><Trash2 className="mr-2 h-4 w-4" />Clear</Button>
+                    </div>
                   </div>
                 )}
               </>
