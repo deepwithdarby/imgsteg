@@ -74,6 +74,15 @@
 
   .shatter-line h2 .shatter-char { @apply text-2xl font-bold tracking-widest uppercase; }
   .shatter-line p .shatter-char { @apply text-lg font-light tracking-wider uppercase; }
+
+  .sky-shot-container {
+    @apply fixed inset-0 z-50 flex items-center justify-center pointer-events-none;
+  }
+
+  .star {
+    @apply absolute bg-primary rounded-full;
+    animation: sky-shot-animation 1.5s ease-out forwards;
+  }
 }
 
 
@@ -96,5 +105,16 @@
   100% {
     opacity: 1;
     transform: translate(0, 0) rotate(0);
+  }
+}
+
+@keyframes sky-shot-animation {
+  0% {
+    transform: scale(0.5) translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translate(var(--final-x), var(--final-y));
+    opacity: 0;
   }
 }
