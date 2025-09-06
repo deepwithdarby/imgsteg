@@ -7,18 +7,18 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Mail, User, MessageSquare } from 'lucide-react';
+import { Phone, User, MessageSquare } from 'lucide-react';
 import Link from "next/link";
 
 export default function ContactPage() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
   const [message, setMessage] = useState('');
 
-  const recipientEmail = "deepwithdarby@gmail.com"; // Replace with your email address
+  const recipientEmail = "deepwithdarby@gmail.com"; 
 
   const subject = `Message from ${name}`;
-  const body = `Name: ${name}%0D%0AEmail: ${email}%0D%0AMessage: ${message}`;
+  const body = `Name: ${name}%0D%0AMobile Number: ${mobileNumber}%0D%0AMessage: ${message}`;
   const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
   return (
@@ -38,11 +38,11 @@ export default function ContactPage() {
               <Input id="name" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="flex items-center">
-                <Mail className="mr-2 h-4 w-4" />
-                Email
+              <Label htmlFor="mobile" className="flex items-center">
+                <Phone className="mr-2 h-4 w-4" />
+                Mobile Number (Optional)
               </Label>
-              <Input id="email" type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input id="mobile" type="tel" placeholder="Enter your mobile number" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="message" className="flex items-center">
