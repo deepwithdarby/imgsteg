@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { LSB } from "@/lib/lsb";
 import { encrypt, decrypt } from "@/lib/crypto";
+import { ShatterText } from "@/components/shatter-text";
 
 export function SteganographyTool() {
   const { toast } = useToast();
@@ -176,9 +177,11 @@ export function SteganographyTool() {
 
   return (
     <div className="w-full max-w-2xl">
-      <div className="text-center my-8">
-        <h2 className="text-2xl font-bold tracking-widest uppercase">Introducing Our Unique Project Of The World</h2>
-        <p className="text-lg font-light tracking-wider uppercase">Keep Personal Keep Secret</p>
+      <div className="text-center my-8 h-24">
+        <ShatterText 
+          line1="Introducing Our Unique Project Of The World" 
+          line2="Keep Personal Keep Secret"
+        />
       </div>
       <Tabs defaultValue="encode" className="w-full">
         <TabsList className="grid w-full grid-cols-2">

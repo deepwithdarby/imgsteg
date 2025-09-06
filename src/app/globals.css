@@ -57,3 +57,44 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .shatter-container {
+    @apply relative flex flex-col items-center justify-center text-center;
+  }
+
+  .shatter-line {
+    @apply invisible;
+  }
+  
+  .shatter-line.animate .shatter-char {
+    @apply inline-block;
+    animation: shatter 1s forwards, reconstruct 1s 2s forwards;
+  }
+
+  .shatter-line h2 .shatter-char { @apply text-2xl font-bold tracking-widest uppercase; }
+  .shatter-line p .shatter-char { @apply text-lg font-light tracking-wider uppercase; }
+}
+
+
+@keyframes shatter {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--r, 0));
+  }
+}
+
+@keyframes reconstruct {
+  0% {
+    opacity: 0;
+    transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--r, 0));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0);
+  }
+}
