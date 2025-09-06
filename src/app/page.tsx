@@ -38,7 +38,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <NextImage
-                src="https://picsum.photos/600/400"
+                src="https://res.cloudinary.com/dk46fa3yl/image/upload/v1757171636/grok_image_sgx8g6_n2nseh.jpg"
                 width={600}
                 height={400}
                 alt="Hero"
