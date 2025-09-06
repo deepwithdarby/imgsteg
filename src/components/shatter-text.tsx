@@ -10,7 +10,22 @@ interface ShatterTextProps {
 
 const ShatterLine: FC<{ text: string; as: 'h2' | 'p'; isVisible: boolean }> = ({ text, as, isVisible }) => {
   const Tag = as;
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const chars = useMemo(() => {
+    if (!isMounted) {
+      // Return static characters on the server and initial client render
+      return text.split('').map((char, index) => (
+        <span key={index} className="shatter-char">
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+      ));
+    }
+
     return text.split('').map((char, index) => {
       const tx = (Math.random() - 0.5) * 500;
       const ty = (Math.random() - 0.5) * 500;
@@ -28,10 +43,10 @@ const ShatterLine: FC<{ text: string; as: 'h2' | 'p'; isVisible: boolean }> = ({
         </span>
       );
     });
-  }, [text]);
+  }, [text, isMounted]);
 
   return (
-    <div className={cn('shatter-line', { 'animate': isVisible })}>
+    <div className={cn('shatter-line', { 'animate': isVisible && isMounted })}>
       <Tag>{chars}</Tag>
     </div>
   );
