@@ -4,7 +4,7 @@ import { useState, useCallback, type ChangeEvent } from "react";
 import NextImage from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +17,8 @@ import {
   ShieldCheck,
   Trash2,
   UploadCloud,
+  FileImage,
+  Repeat
 } from "lucide-react";
 import { LSB } from "@/lib/lsb";
 import { encrypt, decrypt } from "@/lib/crypto";
@@ -155,15 +157,15 @@ export function SteganographyTool() {
   const ImageDropzone = ({ id, onImageChange, image }: { id: string, onImageChange: (e: ChangeEvent<HTMLInputElement>) => void, image: string | null }) => (
     <div className="space-y-4">
       {!image ? (
-        <div
+        <label
+          htmlFor={id}
           className="relative flex flex-col items-center justify-center w-full p-10 border-2 border-dashed rounded-xl cursor-pointer border-border hover:border-primary/50 hover:bg-accent/50 transition-all duration-300"
-          onClick={() => document.getElementById(id)?.click()}
         >
           <UploadCloud className="w-12 h-12 text-muted-foreground" />
           <p className="mt-4 text-sm font-semibold text-foreground">Click to upload or drag & drop</p>
           <p className="text-xs text-muted-foreground">PNG, JPG, WEBP, etc.</p>
           <Input id={id} type="file" className="hidden" accept="image/*" onChange={onImageChange} />
-        </div>
+        </label>
       ) : (
         <div className="relative w-full overflow-hidden rounded-xl border border-border">
           <NextImage src={image} alt="Image preview" width={1280} height={720} className="w-full h-auto object-contain" />
@@ -173,124 +175,133 @@ export function SteganographyTool() {
   );
 
   return (
-    <Card className="w-full max-w-2xl shadow-2xl">
-      <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-primary via-primary/80 to-primary">
-          IMG STEG
-        </CardTitle>
-        <CardDescription className="text-muted-foreground">
-          Hide secret messages in plain sight. Anonymously and securely.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="encode" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="encode"><Key className="w-4 h-4 mr-2" />Encode</TabsTrigger>
-            <TabsTrigger value="decode"><MessageSquare className="w-4 h-4 mr-2" />Decode</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="encode" className="mt-6 space-y-6">
-            {!encodedResult ? (
-              <>
-                <ImageDropzone id="encode-upload" onImageChange={(e) => handleImageSelect(e, 'encode')} image={encodeImage} />
-                {encodeImage && (
-                  <div className="space-y-4">
-                    <Textarea
-                      placeholder="Enter your secret message here..."
-                      value={secretText}
-                      onChange={(e) => setSecretText(e.target.value)}
-                      className="min-h-[120px] text-base"
+    <Tabs defaultValue="encode" className="w-full max-w-2xl">
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="encode"><Key className="w-4 h-4 mr-2" />Encode</TabsTrigger>
+        <TabsTrigger value="decode"><MessageSquare className="w-4 h-4 mr-2" />Decode</TabsTrigger>
+      </TabsList>
+      
+      <TabsContent value="encode" className="mt-6">
+        {!encodedResult ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Encode Message</CardTitle>
+              <CardDescription>Select an image and enter your secret message to hide it.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ImageDropzone id="encode-upload" onImageChange={(e) => handleImageSelect(e, 'encode')} image={encodeImage} />
+              {encodeImage && (
+                <div className="space-y-4">
+                  <Textarea
+                    placeholder="Enter your secret message here..."
+                    value={secretText}
+                    onChange={(e) => setSecretText(e.target.value)}
+                    className="min-h-[120px] text-base"
+                  />
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                     <Input
+                      type="password"
+                      placeholder="Optional: Enter a password to encrypt your message"
+                      value={encodePassword}
+                      onChange={(e) => setEncodePassword(e.target.value)}
+                      className="pl-10"
                     />
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                       <Input
-                        type="password"
-                        placeholder="Optional: Enter a password to encrypt your message"
-                        value={encodePassword}
-                        onChange={(e) => setEncodePassword(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Button onClick={handleEncode} disabled={!encodeImage || !secretText || isEncoding} className="w-full">
-                        {isEncoding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Key className="mr-2 h-4 w-4" />}
-                        Encode Message
-                      </Button>
-                      <Button variant="outline" onClick={clearEncode} className="w-full"><Trash2 className="mr-2 h-4 w-4" />Clear</Button>
-                    </div>
                   </div>
-                )}
-              </>
-            ) : (
-              <div className="space-y-4 text-center">
-                <h3 className="text-xl font-semibold">Encoded Successfully!</h3>
-                <div className="relative w-full overflow-hidden rounded-xl border border-border">
-                  <NextImage src={encodedResult} alt="Encoded image" width={1280} height={720} className="w-full h-auto object-contain" />
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <a href={encodedResult} download="encoded-image.png" className="w-full">
-                    <Button className="w-full"><Download className="mr-2 h-4 w-4" />Download Image</Button>
-                  </a>
-                  <Button variant="outline" onClick={clearEncode} className="w-full">Start Over</Button>
-                </div>
-              </div>
+              )}
+            </CardContent>
+            {encodeImage && (
+              <CardFooter className="flex flex-col sm:flex-row gap-2">
+                <Button onClick={handleEncode} disabled={!encodeImage || !secretText || isEncoding} className="w-full">
+                  {isEncoding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Key className="mr-2 h-4 w-4" />}
+                  Encode Message
+                </Button>
+                <Button variant="outline" onClick={clearEncode} className="w-full"><Trash2 className="mr-2 h-4 w-4" />Clear</Button>
+              </CardFooter>
             )}
-          </TabsContent>
+          </Card>
+        ) : (
+          <Card className="text-center">
+            <CardHeader>
+              <CardTitle>Encoded Successfully!</CardTitle>
+              <CardDescription>Download your new image with the hidden message.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative w-full overflow-hidden rounded-xl border border-border">
+                <NextImage src={encodedResult} alt="Encoded image" width={1280} height={720} className="w-full h-auto object-contain" />
+              </div>
+            </CardContent>
+            <CardFooter className="flex flex-col sm:flex-row gap-2">
+              <a href={encodedResult} download="encoded-image.png" className="w-full">
+                <Button className="w-full"><Download className="mr-2 h-4 w-4" />Download Image</Button>
+              </a>
+              <Button variant="outline" onClick={clearEncode} className="w-full"><Repeat className="mr-2 h-4 w-4" />Start Over</Button>
+            </CardFooter>
+          </Card>
+        )}
+      </TabsContent>
 
-          <TabsContent value="decode" className="mt-6 space-y-6">
-            {!decodedResult ? (
-              <>
-                <ImageDropzone id="decode-upload" onImageChange={(e) => handleImageSelect(e, 'decode')} image={decodeImage} />
-                {decodeImage && (
-                  <div className="space-y-4">
-                    <div className="relative">
-                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                       <Input
-                        type="password"
-                        placeholder="Enter password if message is encrypted"
-                        value={decodePassword}
-                        onChange={(e) => setDecodePassword(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Button onClick={handleDecode} disabled={!decodeImage || isDecoding} className="w-full">
-                        {isDecoding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />}
-                        Decode Message
-                      </Button>
-                      <Button variant="outline" onClick={clearDecode} className="w-full"><Trash2 className="mr-2 h-4 w-4" />Clear</Button>
-                    </div>
+      <TabsContent value="decode" className="mt-6">
+        {!decodedResult ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Decode Message</CardTitle>
+              <CardDescription>Upload an image to extract the hidden message.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ImageDropzone id="decode-upload" onImageChange={(e) => handleImageSelect(e, 'decode')} image={decodeImage} />
+              {decodeImage && (
+                <div className="space-y-4">
+                  <div className="relative">
+                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                     <Input
+                      type="password"
+                      placeholder="Enter password if message is encrypted"
+                      value={decodePassword}
+                      onChange={(e) => setDecodePassword(e.target.value)}
+                      className="pl-10"
+                    />
                   </div>
-                )}
-              </>
-            ) : (
-              <div className="space-y-4">
-                <Card className="bg-muted/50">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg text-primary">
-                      <MessageSquare className="w-5 h-5" /> Decoded Message
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="font-mono text-sm whitespace-pre-wrap p-4 bg-background/50 rounded-md">{decodedResult.decodedText}</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-muted/50">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <ShieldCheck className="w-5 h-5" /> Validation Result
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm">{decodedResult.validationResult}</p>
-                  </CardContent>
-                </Card>
-                <Button variant="outline" onClick={clearDecode} className="w-full">Start Over</Button>
-              </div>
+                </div>
+              )}
+            </CardContent>
+            {decodeImage && (
+              <CardFooter className="flex flex-col sm:flex-row gap-2">
+                <Button onClick={handleDecode} disabled={!decodeImage || isDecoding} className="w-full">
+                  {isDecoding ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />}
+                  Decode Message
+                </Button>
+                <Button variant="outline" onClick={clearDecode} className="w-full"><Trash2 className="mr-2 h-4 w-4" />Clear</Button>
+              </CardFooter>
             )}
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <MessageSquare className="w-5 h-5" /> Decoded Message
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="font-mono text-sm whitespace-pre-wrap p-4 bg-muted rounded-md">{decodedResult.decodedText}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <ShieldCheck className="w-5 h-5" /> Validation Result
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">{decodedResult.validationResult}</p>
+              </CardContent>
+            </Card>
+            <Button variant="outline" onClick={clearDecode} className="w-full"><Repeat className="mr-2 h-4 w-4" />Start Over</Button>
+          </div>
+        )}
+      </TabsContent>
+    </Tabs>
   );
 }
