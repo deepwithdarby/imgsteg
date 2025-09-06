@@ -17,16 +17,15 @@ const ShatterLine: FC<{ text: string; as: 'h2' | 'p'; isVisible: boolean }> = ({
   }, []);
 
   const chars = useMemo(() => {
-    if (!isMounted) {
-      // Return static characters on the server and initial client render
-      return text.split('').map((char, index) => (
-        <span key={index} className="shatter-char">
-          {char === ' ' ? '\u00A0' : char}
-        </span>
-      ));
-    }
-
     return text.split('').map((char, index) => {
+      if (!isMounted) {
+        return (
+          <span key={index} className="shatter-char">
+            {char === ' ' ? '\u00A0' : char}
+          </span>
+        );
+      }
+      
       const tx = (Math.random() - 0.5) * 500;
       const ty = (Math.random() - 0.5) * 500;
       const r = (Math.random() - 0.5) * 720;

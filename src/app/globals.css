@@ -64,7 +64,7 @@
   }
 
   .shatter-line {
-    @apply invisible;
+    /* Initially visible */
   }
   
   .shatter-line.animate .shatter-char {
