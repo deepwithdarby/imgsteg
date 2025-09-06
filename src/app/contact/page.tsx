@@ -15,7 +15,7 @@ export default function ContactPage() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
-  const recipientEmail = "your-email@example.com"; // Replace with your email address
+  const recipientEmail = "deepwithdarby@gmail.com"; // Replace with your email address
 
   const subject = `Message from ${name}`;
   const body = `Name: ${name}%0D%0AEmail: ${email}%0D%0AMessage: ${message}`;
