@@ -81,7 +81,7 @@
 
   .star {
     @apply absolute bg-primary rounded-full;
-    animation: sky-shot-animation 1.5s ease-out forwards;
+    animation: sky-shot-animation 3s ease-out forwards;
   }
 }
 

@@ -10,7 +10,7 @@ interface SkyShotAnimationProps {
 
 export const SkyShotAnimation = ({ onAnimationEnd }: SkyShotAnimationProps) => {
   useEffect(() => {
-    const timer = setTimeout(onAnimationEnd, 1500); // Match animation duration
+    const timer = setTimeout(onAnimationEnd, 3000); // Match animation duration
     return () => clearTimeout(timer);
   }, [onAnimationEnd]);
 
