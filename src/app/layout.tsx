@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { Inter as FontSans } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -22,9 +23,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
+      <body className={cn('min-h-screen bg-background font-sans antialiased flex flex-col', fontSans.variable)}>
         <Header />
-        {children}
+        <main className="flex-1">{children}</main>
+        <Footer />
         <Toaster />
       </body>
     </html>
