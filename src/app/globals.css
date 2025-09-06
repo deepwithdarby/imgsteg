@@ -83,6 +83,18 @@
     @apply absolute bg-primary rounded-full;
     animation: sky-shot-animation 3s ease-out forwards;
   }
+
+  .confetti-container {
+    @apply fixed inset-0 z-50 pointer-events-none;
+  }
+
+  .confetti {
+    @apply absolute w-2 h-4;
+    background-color: var(--bg-color);
+    top: -20px;
+    left: var(--x-start);
+    animation: fall linear forwards;
+  }
 }
 
 
@@ -115,6 +127,17 @@
   }
   100% {
     transform: scale(1) translate(var(--final-x), var(--final-y));
+    opacity: 0;
+  }
+}
+
+@keyframes fall {
+  from {
+    transform: translateY(0) rotate(var(--rotation-start));
+    opacity: 1;
+  }
+  to {
+    transform: translateY(var(--y-end)) translateX(calc(var(--x-end) - var(--x-start))) rotate(var(--rotation-end));
     opacity: 0;
   }
 }

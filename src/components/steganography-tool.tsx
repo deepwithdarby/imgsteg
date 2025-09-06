@@ -24,6 +24,8 @@ import { LSB } from "@/lib/lsb";
 import { encrypt, decrypt } from "@/lib/crypto";
 import { ShatterText } from "@/components/shatter-text";
 import { SkyShotAnimation } from "@/components/sky-shot-animation";
+import { ConfettiAnimation } from "@/components/confetti-animation";
+
 
 export function SteganographyTool() {
   const { toast } = useToast();
@@ -42,7 +44,8 @@ export function SteganographyTool() {
   const [isDecoding, setIsDecoding] = useState<boolean>(false);
   
   // Animation state
-  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
+  const [showSkyShot, setShowSkyShot] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const handleImageSelect = useCallback((e: ChangeEvent<HTMLInputElement>, mode: "encode" | "decode") => {
     const file = e.target.files?.[0];
@@ -69,6 +72,11 @@ export function SteganographyTool() {
       reader.readAsDataURL(file);
     }
   }, [toast]);
+  
+  const triggerSuccessAnimations = () => {
+    setShowSkyShot(true);
+    setShowConfetti(true);
+  };
 
   const handleEncode = async () => {
     if (!encodeImage || !secretText) return;
@@ -83,7 +91,7 @@ export function SteganographyTool() {
       const lsb = new LSB(encodeImage);
       const encodedDataUri = await lsb.encode(textToEncode);
       setEncodedResult(encodedDataUri);
-      setShowSuccessAnimation(true);
+      triggerSuccessAnimations();
       toast({
         title: "Success!",
         description: "Your message has been encoded into the image.",
@@ -130,7 +138,7 @@ export function SteganographyTool() {
         decodedText: finalDecodedText,
         validationResult: validationMessage
       });
-      setShowSuccessAnimation(true);
+      triggerSuccessAnimations();
       toast({
         title: "Success!",
         description: "A message has been decoded from the image.",
@@ -183,7 +191,8 @@ export function SteganographyTool() {
 
   return (
     <div className="w-full max-w-2xl relative">
-      {showSuccessAnimation && <SkyShotAnimation onAnimationEnd={() => setShowSuccessAnimation(false)} />}
+      {showSkyShot && <SkyShotAnimation onAnimationEnd={() => setShowSkyShot(false)} />}
+      {showConfetti && <ConfettiAnimation onAnimationEnd={() => setShowConfetti(false)} />}
       <div className="text-center my-8 h-24">
         <ShatterText 
           line1="Introducing Our Unique Project Of The World" 
