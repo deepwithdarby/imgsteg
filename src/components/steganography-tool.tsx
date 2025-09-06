@@ -2,8 +2,6 @@
 
 import { useState, useCallback, type ChangeEvent } from "react";
 import NextImage from "next/image";
-import { decodeTextFromImage, type DecodeTextFromImageOutput } from "@/ai/flows/decode-text-from-image";
-import { encodeTextToImage } from "@/ai/flows/encode-text-to-image";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +17,7 @@ import {
   Trash2,
   UploadCloud,
 } from "lucide-react";
+import { LSB } from "@/lib/lsb";
 
 export function SteganographyTool() {
   const { toast } = useToast();
@@ -31,7 +30,7 @@ export function SteganographyTool() {
 
   // Decode state
   const [decodeImage, setDecodeImage] = useState<string | null>(null);
-  const [decodedResult, setDecodedResult] = useState<DecodeTextFromImageOutput | null>(null);
+  const [decodedResult, setDecodedResult] = useState<{ decodedText: string, validationResult: string } | null>(null);
   const [isDecoding, setIsDecoding] = useState<boolean>(false);
 
   const handleImageSelect = useCallback((e: ChangeEvent<HTMLInputElement>, mode: "encode" | "decode") => {
@@ -65,11 +64,9 @@ export function SteganographyTool() {
 
     setIsEncoding(true);
     try {
-      const result = await encodeTextToImage({
-        photoDataUri: encodeImage,
-        text: secretText,
-      });
-      setEncodedResult(result.encodedImageDataUri);
+      const lsb = new LSB(encodeImage);
+      const encodedDataUri = await lsb.encode(secretText);
+      setEncodedResult(encodedDataUri);
       toast({
         title: "Success!",
         description: "Your message has been encoded into the image.",
@@ -79,7 +76,7 @@ export function SteganographyTool() {
       toast({
         variant: "destructive",
         title: "Encoding Failed",
-        description: "Something went wrong. Please try again.",
+        description: (error as Error).message || "Something went wrong. Please try again.",
       });
     } finally {
       setIsEncoding(false);
@@ -91,10 +88,12 @@ export function SteganographyTool() {
 
     setIsDecoding(true);
     try {
-      const result = await decodeTextFromImage({
-        encodedImageDataUri: decodeImage,
+      const lsb = new LSB(decodeImage);
+      const decodedText = await lsb.decode();
+      setDecodedResult({
+        decodedText,
+        validationResult: "Decoded successfully using LSB. Ensure the message is what you expect, as LSB does not have built-in validation."
       });
-      setDecodedResult(result);
       toast({
         title: "Success!",
         description: "A message has been decoded from the image.",
@@ -104,12 +103,13 @@ export function SteganographyTool() {
       toast({
         variant: "destructive",
         title: "Decoding Failed",
-        description: "Could not decode a message from this image. Please try another.",
+        description: (error as Error).message || "Could not decode a message from this image. Please try another.",
       });
     } finally {
       setIsDecoding(false);
     }
   };
+
 
   const clearEncode = () => {
     setEncodeImage(null);
