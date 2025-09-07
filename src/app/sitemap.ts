@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://imgsteg.com'
+  const baseUrl = 'https://imgsteg.vercel.app'
 
   return [
     {
