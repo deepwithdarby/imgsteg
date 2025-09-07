@@ -1,3 +1,9 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service | IMG STEG',
+  description: 'Read the Terms of Service for IMG STEG. By using our steganography tool, you agree to these terms.',
+};
 
 export default function TermsOfServicePage() {
   return (

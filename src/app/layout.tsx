@@ -12,8 +12,9 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: 'IMG STEG',
-  description: 'Hide secret messages in your images.',
+  title: 'IMG STEG: Hide Secret Messages in Images with Steganography',
+  description: 'IMG STEG is a free and modern steganography tool that allows you to securely embed and encrypt secret messages within images. Simple, secure, and anonymous.',
+  keywords: 'steganography, hide message in image, image steganography, secret message, image encryption, IMG STEG',
 };
 
 export default function RootLayout({

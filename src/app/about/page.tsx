@@ -1,6 +1,12 @@
 import NextImage from 'next/image';
 import Link from 'next/link';
 import { Lock, Code, ShieldCheck } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'About IMG STEG | Our Mission and Technology',
+  description: 'Learn about IMG STEG, our mission to provide secure communication through steganography, and the technology (LSB, AES-GCM) we use to protect your privacy.',
+};
 
 export default function AboutPage() {
   return (

@@ -9,6 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Phone, User, MessageSquare } from 'lucide-react';
 import Link from "next/link";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Contact Us | IMG STEG',
+    description: 'Get in touch with the IMG STEG team. We are here to answer your questions about our steganography tool.',
+  };
 
 export default function ContactPage() {
   const [name, setName] = useState('');

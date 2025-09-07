@@ -1,3 +1,9 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | IMG STEG',
+  description: 'Read the Privacy Policy for IMG STEG. We are committed to protecting your privacy by not collecting or storing your images, messages, or passwords.',
+};
 
 export default function PrivacyPolicyPage() {
   return (

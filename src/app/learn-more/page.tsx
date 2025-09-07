@@ -1,9 +1,42 @@
 import Link from 'next/link';
 import { Eye, Shield, Users } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Learn About Image Steganography | IMG STEG',
+  description: 'Understand the art and science of steganography. Learn how IMG STEG uses the LSB method and AES-GCM encryption to hide your messages in images securely.',
+};
 
 export default function LearnMorePage() {
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Understanding Image Steganography",
+    "author": {
+      "@type": "Organization",
+      "name": "IMG STEG"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "IMG STEG",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://imgsteg.com/logo.png"
+      }
+    },
+    "datePublished": "2024-07-26",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://imgsteg.com/learn-more"
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <div className="prose prose-lg max-w-4xl mx-auto dark:prose-invert">
         <h1 className="text-4xl font-bold mb-4">Understanding Image Steganography</h1>
         <p className="text-muted-foreground mb-8">
