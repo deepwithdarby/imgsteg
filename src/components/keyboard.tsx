@@ -84,13 +84,13 @@ export function Keyboard({ onKeyPress, onBackspace, onEnter }: KeyboardProps) {
                 ))}
             </div>
             <div className="flex gap-1.5 justify-center">
-              <Key onClick={() => setMode('symbols')} className="w-16 text-sm">?123</Key>
+              <Key onClick={() => setMode('symbols')} className="w-12 text-sm">?123</Key>
               {letterRows[2].map(key => (
                 <Key key={key} onClick={() => handleKeyClick(key)} className="flex-1">
                   {key}
                 </Key>
               ))}
-              <Key onClick={onBackspace} className="w-16">
+              <Key onClick={onBackspace} className="w-12">
                 <Delete size={20} />
               </Key>
             </div>
