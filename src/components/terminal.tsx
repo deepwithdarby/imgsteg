@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { LSB } from "@/lib/lsb";
 import { encrypt, decrypt } from "@/lib/crypto";
 import { Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
+import { Keyboard } from './keyboard';
 
 enum Stage {
   Initial,
@@ -246,6 +247,20 @@ export function Terminal() {
     }
   };
   
+  const handleKeyPress = (key: string) => {
+    setInputValue(prev => prev + key);
+  };
+
+  const handleBackspace = () => {
+    setInputValue(prev => prev.slice(0, -1));
+  };
+
+  const handleEnter = () => {
+    if (inputValue.trim() && !isProcessing) {
+      handleCommand(inputValue.trim());
+    }
+  };
+  
   const getPrompt = () => {
     switch (stage) {
       case Stage.Encode_GetMessage:
@@ -297,18 +312,25 @@ export function Terminal() {
 
         <form onSubmit={handleFormSubmit} className="flex items-center">
           <span className="text-green-400">{getPrompt()}</span>
+           <div className="flex-1 ml-2">
+            <span>{inputValue}</span>
+            {!isProcessing && <span className="blinking-cursor -ml-1 text-2xl font-bold">|</span>}
+          </div>
           <input
             ref={inputRef}
             type={stage === Stage.Encode_GetPassword || stage === Stage.Decode_GetPassword ? 'password' : 'text'}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             disabled={isProcessing}
-            className="bg-transparent border-none text-green-400 focus:outline-none flex-1 ml-2"
+            className="bg-transparent border-none text-green-400 focus:outline-none w-0 h-0"
             autoFocus
+            onFocus={(e) => e.target.style.opacity = '0'}
+            onBlur={(e) => e.target.style.opacity = '0'}
           />
         </form>
         <div ref={terminalEndRef} />
       </div>
+      <Keyboard onKeyPress={handleKeyPress} onBackspace={handleBackspace} onEnter={handleEnter} />
       <input
         type="file"
         ref={fileInputRef}

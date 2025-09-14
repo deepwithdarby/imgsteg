@@ -78,6 +78,7 @@
 @layer components {
   .blinking-cursor::after {
     content: '█';
+    font-weight: 800;
     @apply text-green-400;
     animation: blink 1s step-end infinite;
   }
