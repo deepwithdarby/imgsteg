@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback, ChangeEvent } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { LSB } from "@/lib/lsb";
 import { encrypt, decrypt } from "@/lib/crypto";
+import { Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
 
 enum Stage {
   Initial,
@@ -53,7 +54,7 @@ export function Terminal() {
   useEffect(scrollToBottom, [history]);
   useEffect(() => {
     if (stage === Stage.Initial) {
-      addHistory({ type: 'system', content: 'Terminal initialized. Type "start" to begin.' });
+      addHistory({ type: 'system', content: 'Welcome to IMG STEG. Type "start" to begin.' });
       setStage(Stage.AwaitingCommand);
     }
   }, [stage]);
@@ -209,7 +210,7 @@ export function Terminal() {
       a.href = resultData;
       a.download = 'encoded-image.png';
       document.body.appendChild(a);
-a.click();
+      a.click();
       document.body.removeChild(a);
       addHistory({ type: 'system', content: 'Downloading encoded image...' });
     } else {
@@ -251,36 +252,50 @@ a.click();
       case Stage.Decode_GetPassword:
         return 'password> ';
       default:
-        return 'C:\\Users\\Guest> ';
+        return '$ ';
     }
   };
 
   return (
     <div
-      className="w-full h-[80vh] max-w-4xl bg-black text-green-400 p-4 overflow-y-auto font-mono rounded-lg border-2 border-green-700"
+      className="w-full h-[80vh] max-w-4xl bg-black text-green-400 font-mono rounded-lg border-2 border-green-700 flex flex-col"
       onClick={() => inputRef.current?.focus()}
     >
-      <div className="flex flex-col">
-        {history.map((item, index) => (
-          <div key={index} className={`whitespace-pre-wrap ${item.type === 'error' ? 'text-red-500' : ''} ${item.type === 'input' ? 'text-green-300' : ''}`}>
-             {item.type === 'input' && 'C:\\Users\\Guest> '}{item.content}
-          </div>
-        ))}
-      </div>
+      <header className="bg-[#2d3748] text-green-400 p-2 flex justify-between items-center rounded-t-lg">
+        <div className="flex items-center">
+          <span className="mr-2">&gt;</span>
+          <span>IMG STEG CLI</span>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Facebook size={18} />
+          <Instagram size={18} />
+          <Twitter size={18} />
+          <MessageCircle size={18} />
+        </div>
+      </header>
+      <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex flex-col">
+          {history.map((item, index) => (
+            <div key={index} className={`whitespace-pre-wrap ${item.type === 'error' ? 'text-red-500' : ''} ${item.type === 'input' ? 'text-green-300' : ''}`}>
+              {item.type === 'input' && '$ '}{item.content}
+            </div>
+          ))}
+        </div>
 
-      <form onSubmit={handleFormSubmit} className="flex items-center">
-        <span className="text-green-400">{getPrompt()}</span>
-        <input
-          ref={inputRef}
-          type={stage === Stage.Encode_GetPassword || stage === Stage.Decode_GetPassword ? 'password' : 'text'}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          disabled={isProcessing}
-          className="bg-transparent border-none text-green-400 focus:outline-none flex-1 ml-2"
-          autoFocus
-        />
-      </form>
-      <div ref={terminalEndRef} />
+        <form onSubmit={handleFormSubmit} className="flex items-center">
+          <span className="text-green-400">{getPrompt()}</span>
+          <input
+            ref={inputRef}
+            type={stage === Stage.Encode_GetPassword || stage === Stage.Decode_GetPassword ? 'password' : 'text'}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            disabled={isProcessing}
+            className="bg-transparent border-none text-green-400 focus:outline-none flex-1 ml-2"
+            autoFocus
+          />
+        </form>
+        <div ref={terminalEndRef} />
+      </div>
       <input
         type="file"
         ref={fileInputRef}
