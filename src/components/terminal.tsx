@@ -6,6 +6,7 @@ import { LSB } from "@/lib/lsb";
 import { encrypt, decrypt } from "@/lib/crypto";
 import { Facebook, Instagram, Twitter, MessageCircle } from 'lucide-react';
 import { Keyboard } from './keyboard';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 enum Stage {
   Initial,
@@ -32,6 +33,7 @@ export function Terminal() {
   const [inputValue, setInputValue] = useState('');
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const isMobile = useIsMobile();
 
   // State for steganography
   const [imageDataUri, setImageDataUri] = useState<string | null>(null);
@@ -276,10 +278,20 @@ export function Terminal() {
   const websiteUrl = 'https://imgsteg.vercel.app';
   const shareText = 'Check out this cool image steganography tool!';
 
+  const focusInput = useCallback(() => {
+    if (!isMobile) {
+      inputRef.current?.focus();
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
+    focusInput();
+  }, [focusInput]);
+
   return (
     <div
       className="w-full h-full bg-black text-green-400 font-mono flex flex-col"
-      onClick={() => inputRef.current?.focus()}
+      onClick={focusInput}
     >
       <header className="bg-[#2d3748] text-green-400 p-2 flex justify-between items-center">
         <div className="flex items-center">
@@ -322,15 +334,26 @@ export function Terminal() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             disabled={isProcessing}
+            readOnly={isMobile}
             className="bg-transparent border-none text-green-400 focus:outline-none w-0 h-0"
-            autoFocus
-            onFocus={(e) => e.target.style.opacity = '0'}
-            onBlur={(e) => e.target.style.opacity = '0'}
+            autoFocus={!isMobile}
+            onFocus={(e) => {
+              if (isMobile) {
+                e.target.blur();
+              } else {
+                 e.target.style.opacity = '0'
+              }
+            }}
+            onBlur={(e) => {
+                if (!isMobile) {
+                    e.target.style.opacity = '0'
+                }
+            }}
           />
         </form>
         <div ref={terminalEndRef} />
       </div>
-      <Keyboard onKeyPress={handleKeyPress} onBackspace={handleBackspace} onEnter={handleEnter} />
+      {isMobile && <Keyboard onKeyPress={handleKeyPress} onBackspace={handleBackspace} onEnter={handleEnter} />}
       <input
         type="file"
         ref={fileInputRef}
