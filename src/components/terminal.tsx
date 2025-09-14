@@ -256,6 +256,9 @@ export function Terminal() {
     }
   };
 
+  const websiteUrl = 'https://imgsteg.vercel.app';
+  const shareText = 'Check out this cool image steganography tool!';
+
   return (
     <div
       className="w-full h-[80vh] max-w-4xl bg-black text-green-400 font-mono rounded-lg border-2 border-green-700 flex flex-col"
@@ -267,10 +270,18 @@ export function Terminal() {
           <span>IMG STEG CLI</span>
         </div>
         <div className="flex items-center space-x-3">
-          <Facebook size={18} />
-          <Instagram size={18} />
-          <Twitter size={18} />
-          <MessageCircle size={18} />
+          <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(websiteUrl)}`} target="_blank" rel="noopener noreferrer">
+            <Facebook size={18} className="cursor-pointer hover:text-white" />
+          </a>
+          <span title="Instagram sharing not supported from web">
+            <Instagram size={18} className="cursor-not-allowed opacity-50" />
+          </span>
+          <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(websiteUrl)}&text=${encodeURIComponent(shareText)}`} target="_blank" rel="noopener noreferrer">
+            <Twitter size={18} className="cursor-pointer hover:text-white" />
+          </a>
+          <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + websiteUrl)}`} target="_blank" rel="noopener noreferrer">
+            <MessageCircle size={18} className="cursor-pointer hover:text-white" />
+          </a>
         </div>
       </header>
       <div className="flex-1 p-4 overflow-y-auto">
