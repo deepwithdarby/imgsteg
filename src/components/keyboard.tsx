@@ -2,12 +2,13 @@
 
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { CornerDownLeft, Delete } from 'lucide-react';
+import { CornerDownLeft, Delete, ClipboardPaste } from 'lucide-react';
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;
   onBackspace: () => void;
   onEnter: () => void;
+  onPaste: () => void;
 }
 
 const letterRows = [
@@ -22,7 +23,7 @@ const symbolRows = [
   ['/', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')'],
 ];
 
-export function Keyboard({ onKeyPress, onBackspace, onEnter }: KeyboardProps) {
+export function Keyboard({ onKeyPress, onBackspace, onEnter, onPaste }: KeyboardProps) {
   const [mode, setMode] = useState<'letters' | 'symbols'>('letters');
 
   const handleKeyClick = (key: string) => {
@@ -107,10 +108,13 @@ export function Keyboard({ onKeyPress, onBackspace, onEnter }: KeyboardProps) {
           </>
         )}
         <div className="flex gap-1.5 justify-center">
-          <Key onClick={() => handleKeyClick(' ')} className="w-1/2 min-w-[200px] max-w-[400px]">
+          <Key onClick={onPaste} className="w-16">
+            <ClipboardPaste size={20} />
+          </Key>
+          <Key onClick={() => handleKeyClick(' ')} className="flex-1 min-w-[150px] max-w-[300px]">
             space
           </Key>
-           <Key onClick={onEnter} className="flex-1">
+           <Key onClick={onEnter} className="w-16">
                 <CornerDownLeft size={20} />
             </Key>
         </div>

@@ -262,6 +262,16 @@ export function Terminal() {
       handleCommand(inputValue.trim());
     }
   };
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setInputValue(prev => prev + text);
+      addHistory({ type: 'system', content: `Pasted text from clipboard.` });
+    } catch (err) {
+      addHistory({ type: 'error', content: `Failed to read clipboard: ${(err as Error).message}` });
+    }
+  };
   
   const getPrompt = () => {
     switch (stage) {
@@ -334,8 +344,7 @@ export function Terminal() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             disabled={isProcessing}
-            readOnly={isMobile}
-            className="bg-transparent border-none text-green-400 focus:outline-none w-0 h-0"
+            className="bg-transparent border-none text-green-400 focus:outline-none w-0 h-0 p-0"
             autoFocus={!isMobile}
             onFocus={(e) => {
               if (isMobile) {
@@ -353,7 +362,7 @@ export function Terminal() {
         </form>
         <div ref={terminalEndRef} />
       </div>
-      {isMobile && <Keyboard onKeyPress={handleKeyPress} onBackspace={handleBackspace} onEnter={handleEnter} />}
+      {isMobile && <Keyboard onKeyPress={handleKeyPress} onBackspace={handleBackspace} onEnter={handleEnter} onPaste={handlePaste} />}
       <input
         type="file"
         ref={fileInputRef}
