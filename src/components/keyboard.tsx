@@ -40,18 +40,27 @@ export function Keyboard({ onKeyPress, onBackspace, onEnter, onPaste }: Keyboard
     onClick: () => void;
     className?: string;
     width?: string;
-  }) => (
-    <button
-      onClick={onClick}
-      className={cn(
-        'h-11 rounded-md border border-green-800 bg-black text-green-400 flex items-center justify-center font-mono text-lg hover:bg-green-900/50 hover:text-green-300 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500',
-        className
-      )}
-      style={{ width }}
-    >
-      {children}
-    </button>
-  );
+  }) => {
+    const handleClick = () => {
+      if (navigator.vibrate) {
+        navigator.vibrate(50); // Vibrate for 50ms
+      }
+      onClick();
+    };
+
+    return (
+      <button
+        onClick={handleClick}
+        className={cn(
+          'h-11 rounded-md border border-green-800 bg-black text-green-400 flex items-center justify-center font-mono text-lg hover:bg-green-900/50 hover:text-green-300 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500',
+          className
+        )}
+        style={{ width }}
+      >
+        {children}
+      </button>
+    );
+  }
 
   const renderKeys = (rows: string[][]) => {
     return rows.map((row, rowIndex) => (
