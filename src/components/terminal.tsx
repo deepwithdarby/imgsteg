@@ -323,7 +323,7 @@ export function Terminal() {
           </a>
         </div>
       </header>
-      <div className="flex-1 p-4 overflow-y-auto">
+      <div className="flex-1 p-4 overflow-y-auto pb-48">
         <div className="flex flex-col">
           {history.map((item, index) => (
             <div key={index} className={`whitespace-pre-wrap ${item.type === 'error' ? 'text-red-500' : ''} ${item.type === 'input' ? 'text-green-300' : ''}`}>

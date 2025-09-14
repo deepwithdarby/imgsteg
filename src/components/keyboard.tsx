@@ -66,7 +66,7 @@ export function Keyboard({ onKeyPress, onBackspace, onEnter, onPaste }: Keyboard
   };
 
   return (
-    <div className="bg-black/80 p-2 pb-4 border-t border-green-900">
+    <div className="fixed bottom-0 left-0 right-0 bg-black/80 p-2 pb-4 border-t border-green-900">
       <div className="flex flex-col gap-1.5">
         {mode === 'letters' ? (
           <>
