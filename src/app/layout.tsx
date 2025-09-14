@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { Inconsolata as FontMono } from 'next/font/google';
+import { Special_Elite as FontMono } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
 const fontMono = FontMono({
   subsets: ['latin'],
   variable: '--font-mono',
-  weight: ['400', '700'],
+  weight: ['400'],
 });
 
 export const metadata: Metadata = {
