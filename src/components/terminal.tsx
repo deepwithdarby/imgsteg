@@ -261,10 +261,10 @@ export function Terminal() {
 
   return (
     <div
-      className="w-full h-[80vh] max-w-4xl bg-black text-green-400 font-mono rounded-lg border-2 border-green-700 flex flex-col"
+      className="w-full h-full bg-black text-green-400 font-mono flex flex-col"
       onClick={() => inputRef.current?.focus()}
     >
-      <header className="bg-[#2d3748] text-green-400 p-2 flex justify-between items-center rounded-t-lg">
+      <header className="bg-[#2d3748] text-green-400 p-2 flex justify-between items-center">
         <div className="flex items-center">
           <span className="mr-2">&gt;</span>
           <span>IMG STEG CLI</span>

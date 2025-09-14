@@ -22,8 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-mono antialiased', fontMono.variable)}>
-        <main>{children}</main>
+      <body className={cn('h-screen bg-background font-mono antialiased', fontMono.variable)}>
+        <main className="h-full">{children}</main>
         <Toaster />
       </body>
     </html>
