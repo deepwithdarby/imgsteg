@@ -72,8 +72,10 @@ export function Terminal() {
             fileInputRef.current?.click();
         } else if (command.toLowerCase() === 'download') {
             handleDownload();
+        } else if (command.toLowerCase() === 'clear') {
+            setHistory([]);
         } else {
-            addHistory({ type: 'error', content: `Unknown command: "${command}". Available commands: "start", "upload", "download".` });
+            addHistory({ type: 'error', content: `Unknown command: "${command}". Available commands: "start", "upload", "download", "clear".` });
         }
         break;
 
