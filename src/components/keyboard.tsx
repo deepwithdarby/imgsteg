@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { ArrowBigUp, CornerDownLeft, Delete } from 'lucide-react';
+import { CornerDownLeft, Delete } from 'lucide-react';
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;
@@ -70,14 +70,16 @@ export function Keyboard({ onKeyPress, onBackspace, onEnter }: KeyboardProps) {
         {mode === 'letters' ? (
           <>
             {renderKeys(letterRows.slice(0,1))}
-            <div className="flex gap-1.5 justify-center">
-                <div className="w-4" />
+            <div className="flex gap-1.5 justify-center px-4">
                 {renderKeys([letterRows[1]])}
-                <div className="w-4" />
             </div>
             <div className="flex gap-1.5 justify-center">
               <Key onClick={() => setMode('symbols')} className="w-16 text-sm">?123</Key>
-              {renderKeys([letterRows[2]])}
+              {letterRows[2].map(key => (
+                <Key key={key} onClick={() => handleKeyClick(key)} className="flex-1">
+                  {key}
+                </Key>
+              ))}
               <Key onClick={onBackspace} className="w-16">
                 <Delete size={20} />
               </Key>
