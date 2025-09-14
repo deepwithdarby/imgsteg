@@ -42,7 +42,7 @@ export function Keyboard({ onKeyPress, onBackspace, onEnter, onPaste }: Keyboard
     width?: string;
   }) => {
     const handleClick = () => {
-      if (navigator.vibrate) {
+      if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
         navigator.vibrate(50); // Vibrate for 50ms
       }
       onClick();
