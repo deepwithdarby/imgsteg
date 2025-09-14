@@ -69,9 +69,19 @@ export function Keyboard({ onKeyPress, onBackspace, onEnter }: KeyboardProps) {
       <div className="flex flex-col gap-1.5">
         {mode === 'letters' ? (
           <>
-            {renderKeys(letterRows.slice(0,1))}
+            <div className="flex gap-1.5 justify-center">
+              {letterRows[0].map(key => (
+                  <Key key={key} onClick={() => handleKeyClick(key)} className="flex-1">
+                    {key}
+                  </Key>
+                ))}
+            </div>
             <div className="flex gap-1.5 justify-center px-4">
-                {renderKeys([letterRows[1]])}
+              {letterRows[1].map(key => (
+                  <Key key={key} onClick={() => handleKeyClick(key)} className="flex-1">
+                    {key}
+                  </Key>
+                ))}
             </div>
             <div className="flex gap-1.5 justify-center">
               <Key onClick={() => setMode('symbols')} className="w-16 text-sm">?123</Key>
