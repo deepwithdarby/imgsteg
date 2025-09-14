@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { IBM_Plex_Mono as FontMono } from 'next/font/google';
+import { Inconsolata as FontMono } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
 const fontMono = FontMono({
